@@ -14,8 +14,16 @@ $composer require OpenPrunus/sasl-php
 
 ```php
 use SASL\Factory;
+use SASL\Exceptions\FactoryException;
+use SASL\Exceptions\MechanismsException;
 
-$factory = new Factory("plain");
+try{
+    $factory = new Factory("plain");
+} catch (FactoryException $e) {
+    echo $e->getMessage();
+} catch (MechanismsException $e) {
+    echo $e->getMessage();
+}
 
 $arguments = [
     'authzid' => 'id',
@@ -23,5 +31,9 @@ $arguments = [
     'passwd'  => 'mypassword'
 ];
 
-$plainResponse = $factory->getFormattedResponse($arguments);
+try {
+    $plainResponse = $factory->getFormattedResponse($arguments);
+} catch (MechanismsException $e) {
+    echo $e->getMessage();
+}
 ```
