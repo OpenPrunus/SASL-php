@@ -1,5 +1,5 @@
 {
-    "name": "OpenPrunus/SASL-php",
+    "name": "openprunus/sasl-php",
     "type": "library",
     "description": "PHP lib for SASL",
     "authors": [
