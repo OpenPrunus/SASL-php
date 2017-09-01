@@ -13,6 +13,8 @@ $composer require OpenPrunus/sasl-php
 ## Usage
 
 ```php
+use SASL\Factory;
+
 $factory = new Factory("plain");
 
 $arguments = [
