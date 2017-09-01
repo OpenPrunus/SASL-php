@@ -1,7 +1,7 @@
 {
     "name": "OpenPrunus/SASL-php",
     "type": "library",
-    "description": "PHP lib for XMPP",
+    "description": "PHP lib for SASL",
     "authors": [
         {
             "name": "OpenPrunus"
