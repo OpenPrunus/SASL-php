@@ -7,12 +7,12 @@ use SASL\Exceptions\MechanismsException;
 use SASL\Mechanisms\PlainMechanism;
 
 /**
- * SASL class.
+ * Factory class.
  * Manage mechanisms types
  *
  * @codeCoverageIgnore
  */
-class SASL
+class Factory
 {
     /**
      * @var PlainMechanism
@@ -24,7 +24,7 @@ class SASL
      *
      * @param string type
      *
-     * @return SASL
+     * @return Factory
      *
      * @throws FactoryException
      */
