@@ -1,6 +1,6 @@
 # sasl-php
 
-This library is a Simple Authentication and Security Layer php library.
+A Simple Authentication and Security Layer php library.
 
 ## /!\ Support for PLAIN actually. Work in progress for others
 
