@@ -36,4 +36,6 @@ try {
 } catch (MechanismsException $e) {
     echo $e->getMessage();
 }
+
+echo $plainResponse;
 ```
