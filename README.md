@@ -1,6 +1,6 @@
 # sasl-php
 
-A Simple Authentication and Security Layer php library.
+A Simple Authentication and Security Layer php library
 
 ## /!\ Support for PLAIN actually. Work in progress for others
 
@@ -42,4 +42,4 @@ echo $plainResponse;
 
 ## Builds
 
-- https://jenkins.ecuri.es/job/sasl-php/
+- https://jenkins.ecuri.es/view/SASL-PHP/
