@@ -2,7 +2,7 @@
 
 A Simple Authentication and Security Layer php library.
 
-## /!\ Support for PLAIN actually. Work in progress for others
+## /!\ Support for PLAIN actually. Work in progress for others /!\
 
 For add a dependency composer in your project :
 
