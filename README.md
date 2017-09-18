@@ -42,4 +42,4 @@ echo $plainResponse;
 
 ## Builds
 
-- https://jenkins.ecuri.es/view/SASL-PHP/
+- https://jenkins.ecuri.es/job/sasl-php/
