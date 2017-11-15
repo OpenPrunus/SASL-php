@@ -1,6 +1,7 @@
 {
     "name": "openprunus/sasl-php",
     "type": "library",
+    "license": "GPL-3.0",
     "description": "PHP lib for SASL",
     "authors": [
         {
