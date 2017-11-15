@@ -22,6 +22,9 @@ class PlainMechanismTest extends TestCase
         $this->plainMechanism = new PlainMechanism();
     }
 
+    /**
+     * Test returned response with authzid
+     */
     public function testReturnResponseWithAuthzid()
     {
         $this->assertEquals($this->authzid.$this->utf8Nul.$this->authcid.$this->utf8Nul.$this->passwd ,$this->plainMechanism->getFormattedResponse(
@@ -32,6 +35,9 @@ class PlainMechanismTest extends TestCase
         ]));
     }
 
+    /**
+     * Test returned response without authzid
+     */
     public function testReturnResponseWithoutAuthzid()
     {
         $this->assertEquals($this->utf8Nul.$this->authcid.$this->utf8Nul.$this->passwd ,$this->plainMechanism->getFormattedResponse(
@@ -44,7 +50,7 @@ class PlainMechanismTest extends TestCase
     /**
      * @dataProvider casesProvider
      *
-     * @@expectedException SASL\Exceptions\MechanismsException
+     * @expectedException SASL\Exceptions\MechanismsException
      */
     public function testKeysArraysDoesntExist($cases)
     {
