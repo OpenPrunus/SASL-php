@@ -36,68 +36,19 @@
  * @author Prunus <prunus[at]ecuri[dot]es>
  */
 
-namespace SASL;
-
-use SASL\Exceptions\FactoryException;
-use SASL\Exceptions\MechanismsException;
+use PHPUnit\Framework\TestCase;
 use SASL\Mechanisms\PlainMechanism;
 
 /**
- * Factory class.
- * Manage mechanisms types
- *
- * @codeCoverageIgnore
+ * PlainMechanismTest unit class
  */
-class Factory
+class ScramMechanismTest extends TestCase
 {
     /**
-     * @var PlainMechanism
+     * Initialize tests
      */
-    protected $mechanism;
-
-    /**
-     * Constructor
-     *
-     * @param string $type
-     *
-     * @return Factory
-     *
-     * @throws FactoryException
-     */
-    public function __construct($type)
+    public function setUp()
     {
-        if (!is_string($type)) {
-            throw new FactoryException("Argument is not a string");
-        }
 
-        switch (strtolower($type)) {
-            case 'plain':
-                $this->mechanism = new PlainMechanism();
-                break;
-
-            default:
-                throw new FactoryException("Unkown type");
-        }
-    }
-
-    /**
-     * Get formatted string with Mecanism implemented
-     *
-     * @param array $arguments
-     * expected possible keys
-     * (defined in
-     * - RFC4616 https://tools.ietf.org/html/rfc4616
-     * ) :
-     * - authzid
-     * - authcid
-     * - passwd
-     *
-     * @return string
-     *
-     * @throws MechanismsException
-     */
-    public function getFormattedResponse(Array $arguments)
-    {
-        return $this->mechanism->getFormattedResponse($arguments);
     }
 }

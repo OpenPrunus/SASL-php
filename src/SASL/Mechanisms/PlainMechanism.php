@@ -78,7 +78,7 @@ class PlainMechanism implements MechanismsInterface
     {
         if (!(isset($arguments['authcid']) && !empty($arguments['authcid']) &&
               isset($arguments['passwd']) && !empty($arguments['passwd']))) {
-            throw new MechanismsException(sprintf('%s and/or %s keys are not defined', 'authcid', 'passwd'));
+            throw new MechanismsException('authcid and/or passwd keys are not defined');
         }
 
         $this->authcid = $arguments['authcid'];
