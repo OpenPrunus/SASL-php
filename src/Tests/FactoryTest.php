@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Sasl library.
@@ -57,6 +57,6 @@ class FactoryTest extends TestCase
      */
     public function testFactoryBadArgumentTypeException()
     {
-        new Factory(null);
+        new Factory("toto");
     }
 }

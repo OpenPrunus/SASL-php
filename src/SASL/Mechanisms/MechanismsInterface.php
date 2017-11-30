@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Sasl library.
@@ -54,5 +54,5 @@ interface MechanismsInterface
      *
      * @throws MechanismsException
      */
-    public function getFormattedResponse(Array $arguments);
+    public function getFormattedResponse(Array $arguments): string;
 }
