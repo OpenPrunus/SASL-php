@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Sasl library.
@@ -107,7 +107,7 @@ class ScramMechanism implements MechanismsInterface
     *
     * @throws MechanismsException
     */
-    function __construct($hash)
+    function __construct(string $hash)
     {
         $selectedHashType = strtolower(str_replace('-', '', strtolower($hash)));
         $this->hashFunctions = [
@@ -134,7 +134,7 @@ class ScramMechanism implements MechanismsInterface
     /**
      * {@inheritdoc}
      */
-    public function getFormattedResponse(Array $arguments)
+    public function getFormattedResponse(array $arguments): string
     {
         if (!(isset($arguments['authcid']) && !empty($arguments['authcid']) &&
               isset($arguments['passwd']) && !empty($arguments['passwd']))) {
@@ -160,7 +160,7 @@ class ScramMechanism implements MechanismsInterface
      *
      * @return string
      */
-    private function formatName($username)
+    private function formatName(string $username): string
     {
         return str_replace(array('=', ','), array('=3D', '=2C'), $username);
     }
@@ -174,7 +174,7 @@ class ScramMechanism implements MechanismsInterface
      *
      * @return string
      */
-   private function generateInitialResponse($authcid, $authzid)
+   private function generateInitialResponse(string $authcid, string $authzid): string
    {
        $gs2CbindFlag           = 'n,';
        $authzidFlag            = !empty($authzid) ? sprintf("a=%s", $authzid) : '';
@@ -191,9 +191,9 @@ class ScramMechanism implements MechanismsInterface
      * @param string $challenge
      * @param string $password
      *
-     * @return string|false
+     * @return string
      */
-    private function generateResponse($challenge, $password)
+    private function generateResponse(string $challenge, string $password): string
     {
         $matches = array();
         $serverMessageRegexp = "#^r=([\x21-\x2B\x2D-\x7E/]+)"
@@ -201,23 +201,17 @@ class ScramMechanism implements MechanismsInterface
         . ",i=([0-9]*)(,[A-Za-z]=[^,])*$#";
 
         if (!isset($this->cnonce, $this->gs2Header) || !preg_match($serverMessageRegexp, $challenge, $matches)) {
-            return false;
+            return '';
         }
 
-        $nonce = $matches[1];
-        $salt  = base64_decode($matches[2]);
-
-        if (!$salt) {
-            // Invalid Base64.
-            return false;
-        }
-
+        $nonce  = $matches[1];
+        $salt   = base64_decode($matches[2]);
         $i      = intval($matches[3]);
         $cnonce = substr($nonce, 0, strlen($this->cnonce));
 
-        if ($cnonce !== $this->cnonce) {
-            // Invalid challenge! Are we under attack?
-            return false;
+        if (!$salt || $cnonce !== $this->cnonce) {
+            // Invalid Base64 or invalid challenge! Are we under attack?.
+            return '';
         }
 
         $channelBinding       = sprintf("c=%s", base64_encode($this->gs2Header));
@@ -244,7 +238,7 @@ class ScramMechanism implements MechanismsInterface
      *
      * @return string
      */
-    private function hi($str, $salt, $i)
+    private function hi(string $str, string $salt, int $i): string
     {
         $int1 = "\0\0\0\1";
         $ui = hash_hmac($this->hashAlgo, $salt . $int1, $str, true);
@@ -267,7 +261,7 @@ class ScramMechanism implements MechanismsInterface
      *
      * @return bool
      */
-    public function verify($data)
+    public function verify(string $data): bool
     {
         $verifierRegexp = '#^v=((?:[A-Za-z0-9/+]{4})*(?:[A-Za-z0-9/+]{3}=|[A-Za-z0-9/+]{2}==)?)$#';
         $matches = array();
@@ -290,7 +284,7 @@ class ScramMechanism implements MechanismsInterface
      *
      * @return string The cnonce value
      */
-    protected function generateCnonce()
+    protected function generateCnonce(): string
     {
         foreach (array('/dev/urandom', '/dev/random') as $file) {
             if (is_readable($file)) {
