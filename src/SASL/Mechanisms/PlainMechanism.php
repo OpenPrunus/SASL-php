@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
 * Sasl library.
@@ -42,6 +42,9 @@ use SASL\Exceptions\MechanismsException;
 
 class PlainMechanism implements MechanismsInterface
 {
+    /**
+     * @var int
+     */
     const UTF8NUL = "\000";
 
     /**
@@ -74,7 +77,7 @@ class PlainMechanism implements MechanismsInterface
     /**
      * {@inheritdoc}
      */
-    public function getFormattedResponse(Array $arguments)
+    public function getFormattedResponse(array $arguments): string
     {
         if (!(isset($arguments['authcid']) && !empty($arguments['authcid']) &&
               isset($arguments['passwd']) && !empty($arguments['passwd']))) {

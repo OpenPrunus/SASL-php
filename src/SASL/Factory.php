@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Sasl library.
@@ -64,12 +64,8 @@ class Factory
      *
      * @throws FactoryException
      */
-    public function __construct($type)
+    public function __construct(string $type)
     {
-        if (!is_string($type)) {
-            throw new FactoryException("Argument is not a string");
-        }
-
         switch (strtolower($type)) {
             case 'plain':
                 $this->mechanism = new PlainMechanism();
@@ -96,7 +92,7 @@ class Factory
      *
      * @throws MechanismsException
      */
-    public function getFormattedResponse(Array $arguments)
+    public function getFormattedResponse(array $arguments): string
     {
         return $this->mechanism->getFormattedResponse($arguments);
     }
