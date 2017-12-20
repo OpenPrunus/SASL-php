@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
 * Sasl library.
@@ -34,6 +34,7 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 * @author Richard Heyes <richard@php.net>
+* @author Prunus <prunus[at]ecuri[dot]es>
 */
 
 namespace SASL\Mechanisms;
@@ -42,6 +43,9 @@ use SASL\Exceptions\MechanismsException;
 
 class PlainMechanism implements MechanismsInterface
 {
+    /**
+     * @var int
+     */
     const UTF8NUL = "\000";
 
     /**
@@ -74,11 +78,11 @@ class PlainMechanism implements MechanismsInterface
     /**
      * {@inheritdoc}
      */
-    public function getFormattedResponse(Array $arguments)
+    public function getFormattedResponse(array $arguments): string
     {
         if (!(isset($arguments['authcid']) && !empty($arguments['authcid']) &&
               isset($arguments['passwd']) && !empty($arguments['passwd']))) {
-            throw new MechanismsException(sprintf('%s and/or %s keys are not defined', 'authcid', 'passwd'));
+            throw new MechanismsException('authcid and/or passwd keys are not defined');
         }
 
         $this->authcid = $arguments['authcid'];
