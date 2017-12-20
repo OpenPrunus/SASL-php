@@ -87,6 +87,7 @@ class PlainMechanismTest extends TestCase
      * @dataProvider casesProvider
      *
      * @expectedException SASL\Exceptions\MechanismsException
+     * @expectedExceptionMessage authcid and/or passwd keys are not defined
      */
     public function testKeysArraysDoesntExist($cases)
     {
