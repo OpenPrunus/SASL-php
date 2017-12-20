@@ -1,10 +1,16 @@
 # sasl-php
 
-A Simple Authentication and Security Layer php library
+A Simple Authentication and Security Layer PHP 7.2 library
 
-## /!\ Support for PLAIN actually. Work in progress for others /!\
+## /!\ Support for PLAIN and SCRAM actually. Work in progress for others /!\
 
-For add a dependency composer in your project :
+## Supported mechanisms
+
+* PLAIN
+* SCRAM
+
+
+## For add a dependency composer in your project
 
 ```
 $composer require openprunus/sasl-php
