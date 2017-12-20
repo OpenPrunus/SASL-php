@@ -34,6 +34,7 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 * @author Richard Heyes <richard@php.net>
+* @author Prunus <prunus[at]ecuri[dot]es>
 */
 
 namespace SASL\Mechanisms;
