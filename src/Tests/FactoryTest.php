@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Sasl library.
@@ -46,17 +46,10 @@ class FactoryTest extends TestCase
 {
     /**
      * @expectedException SASL\Exceptions\FactoryException
+     * @expectedExceptionMessage Unkown type
      */
     public function testFactoryBadArgumentStringException()
     {
         new Factory('test');
-    }
-
-    /**
-     * @expectedException SASL\Exceptions\FactoryException
-     */
-    public function testFactoryBadArgumentTypeException()
-    {
-        new Factory(null);
     }
 }
