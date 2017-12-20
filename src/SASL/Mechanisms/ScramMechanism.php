@@ -113,22 +113,22 @@ class ScramMechanism implements MechanismsInterface
         $this->hashFunctions = [
             'md2'     => 'md2',
             'md5'     => 'md5',
-            'sha-1'   => 'sha1',
-            'sha-224' => 'sha224',
-            'sha-256' => 'sha256',
-            'sha-384' => 'sha384',
-            'sha-512' => 'sha512'
+            'sha1'    => 'sha1',
+            'sha224'  => 'sha224',
+            'sha256'  => 'sha256',
+            'sha384'  => 'sha384',
+            'sha512'  => 'sha512'
         ];
 
         if (!isset($this->hashFunctions[$selectedHashType])) {
-            throw new MechanismsException(sprintf('Invalid SASL mechanism type. Only following hashs supported : %s', implode(",", $this->hashFunctions)));
+            throw new MechanismsException(sprintf('Invalid SASL mechanism type. Only following hashs supported : %s', implode(',', $this->hashFunctions)));
         }
 
         $this->hashAlgo  = $selectedHashType;
-        $this->authcid   = "";
-        $this->passwd    = "";
-        $this->challenge = "";
-        $this->authzid   = "";
+        $this->authcid   = '';
+        $this->passwd    = '';
+        $this->challenge = '';
+        $this->authzid   = '';
     }
 
     /**
@@ -136,20 +136,26 @@ class ScramMechanism implements MechanismsInterface
      */
     public function getFormattedResponse(array $arguments): string
     {
-        if (!(isset($arguments['authcid']) && !empty($arguments['authcid']) &&
-              isset($arguments['passwd']) && !empty($arguments['passwd']))) {
+        if (!isset($arguments['authcid']) && !isset($arguments['passwd'])) {
             throw new MechanismsException('authcid and/or passwd keys are not defined');
         }
 
-        $this->authcid   = $arguments['authcid'];
+        $authzid = isset($arguments['authzid']) ? $this->formatName($arguments['authzid']) : false;
+        $authcid = $this->formatName($arguments['authcid']);
+
+        if (empty($authcid) && !$authzid && empty($arguments['passwd'])) {
+            throw new MechanismsException('authcid, password and/or authzid are empty');
+        }
+
+        $this->authcid   = $authcid;
         $this->passwd    = $arguments['passwd'];
-        $this->challenge = isset($arguments['challenge']) ? $arguments['challenge'] : null;
-        $this->authzid   = isset($arguments['authzid']) ? $arguments['authzid'] : null;
+        $this->challenge = isset($arguments['challenge']) ? $arguments['challenge'] : '';
+        $this->authzid   = isset($arguments['authzid']) ? $authzid : '';
 
         if (empty($this->challenge)) {
             return $this->generateInitialResponse($this->authcid, $this->authzid);
         } else {
-            return $this->generateResponse($this->challenge, $this->passwd );
+            return $this->generateResponse($this->challenge, $this->passwd);
         }
     }
 
@@ -177,12 +183,12 @@ class ScramMechanism implements MechanismsInterface
    private function generateInitialResponse(string $authcid, string $authzid): string
    {
        $gs2CbindFlag           = 'n,';
-       $authzidFlag            = !empty($authzid) ? sprintf("a=%s", $authzid) : '';
-       $this->gs2Header        = sprintf("%s%s,", $gs2CbindFlag, $authzidFlag);
+       $authzidFlag            = !empty($authzid) ? sprintf('a=%s', $authzid) : '';
+       $this->gs2Header        = sprintf('%s%s,', $gs2CbindFlag, $authzidFlag);
        $this->cnonce           = $this->generateCnonce();
-       $this->firstMessageBare = sprintf("n=%s,r=%s", $authcid, $this->cnonce);
+       $this->firstMessageBare = sprintf('n=%s,r=%s', $authcid, $this->cnonce);
 
-       return sprintf("%s%s", $this->gs2Header, $this->firstMessageBare);
+       return sprintf('%s%s', $this->gs2Header, $this->firstMessageBare);
    }
 
     /**
@@ -201,7 +207,7 @@ class ScramMechanism implements MechanismsInterface
         . ",i=([0-9]*)(,[A-Za-z]=[^,])*$#";
 
         if (!isset($this->cnonce, $this->gs2Header) || !preg_match($serverMessageRegexp, $challenge, $matches)) {
-            return '';
+            throw new MechanismsException('Invalid cnonce, gs2Header or challenge');
         }
 
         $nonce  = $matches[1];
@@ -210,23 +216,22 @@ class ScramMechanism implements MechanismsInterface
         $cnonce = substr($nonce, 0, strlen($this->cnonce));
 
         if (!$salt || $cnonce !== $this->cnonce) {
-            // Invalid Base64 or invalid challenge! Are we under attack?.
-            return '';
+            throw new MechanismsException('Invalid Base64 or invalid challenge');
         }
 
-        $channelBinding       = sprintf("c=%s", base64_encode($this->gs2Header));
-        $finalMessage         = sprintf("%s,r=%s", $channelBinding, $nonce);
+        $channelBinding       = sprintf('c=%s', base64_encode($this->gs2Header));
+        $finalMessage         = sprintf('%s,r=%s', $channelBinding, $nonce);
         $saltedPassword       = $this->hi($password, $salt, $i);
         $this->saltedPassword = $saltedPassword;
-        $clientKey            = hash_hmac($this->hashAlgo, "Client Key", $saltedPassword, true);
+        $clientKey            = hash_hmac($this->hashAlgo, 'Client Key', $saltedPassword, true);
         $storedKey            = hash($this->hashAlgo, $clientKey, true);
-        $authMessage          = sprintf("%s,%s,%s", $this->firstMessageBare, $challenge, $finalMessage);
+        $authMessage          = sprintf('%s,%s,%s', $this->firstMessageBare, $challenge, $finalMessage);
         $this->authMessage    = $authMessage;
         $clientSignature      = hash_hmac($this->hashAlgo, $authMessage, $storedKey, true);
         $clientProof          = $clientKey ^ $clientSignature;
-        $proof                = sprintf(",p=%s", base64_encode($clientProof));
+        $proof                = sprintf(',p=%s', base64_encode($clientProof));
 
-        return sprintf("%s%s", $finalMessage, $proof);
+        return sprintf('%s%s', $finalMessage, $proof);
     }
 
     /**
@@ -273,7 +278,7 @@ class ScramMechanism implements MechanismsInterface
 
         $verifier                = $matches[1];
         $proposedServerSignature = base64_decode($verifier);
-        $serverKey               = hash_hmac($this->hashAlgo, "Server Key", $this->saltedPassword, true);
+        $serverKey               = hash_hmac($this->hashAlgo, 'Server Key', $this->saltedPassword, true);
         $serverSignature         = hash_hmac($this->hashAlgo, $this->authMessage, $serverKey, true);
 
         return $proposedServerSignature === $serverSignature;
@@ -282,20 +287,16 @@ class ScramMechanism implements MechanismsInterface
     /**
      * Creates the client nonce for the response
      *
+     * @param array $files
+     *
      * @return string The cnonce value
      */
-    protected function generateCnonce(): string
+    protected function generateCnonce(array $files = []): string
     {
-        foreach (array('/dev/urandom', '/dev/random') as $file) {
-            if (is_readable($file)) {
-                return base64_encode(file_get_contents($file, false, null, -1, 32));
-            }
-        }
-
         $cnonce = '';
 
         for ($i = 0; $i < 32; $i++) {
-            $cnonce .= chr(mt_rand(0, 255));
+            $cnonce .= chr(random_int(0, 255));
         }
 
         return base64_encode($cnonce);
